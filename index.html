@@ -8,7 +8,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
-/* BACKGROUND WITH YOUR PHOTO */
+/* BACKGROUND WITH PHOTO */
 body{
     font-family:'Poppins',sans-serif;
     min-height:100vh;
@@ -16,20 +16,14 @@ body{
     justify-content:center;
     align-items:center;
     background:
-        linear-gradient(
-            rgba(18,0,33,0.55),
-            rgba(18,0,33,0.55)
-        ),
+        linear-gradient(rgba(18,0,33,0.55), rgba(18,0,33,0.55)),
         url("bg.jpg") center/cover no-repeat;
 }
 
 /* CARD */
 .container{
-    background:linear-gradient(
-        rgba(255,255,255,0.12),
-        rgba(255,255,255,0.06)
-    );
-    backdrop-filter: blur(6px); /* SLIGHT BLUR */
+    background:linear-gradient(rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+    backdrop-filter: blur(6px);
     border-radius:28px;
     padding:28px;
     max-width:360px;
@@ -62,7 +56,6 @@ input{
     color:white;
     margin-bottom:14px;
 }
-input::placeholder{color:#eee}
 
 /* BUTTONS */
 .btn{
@@ -75,8 +68,8 @@ input::placeholder{color:#eee}
     color:#120021;
     cursor:pointer;
 }
-.btn:active{transform:scale(.97)}
 
+/* GENERATOR */
 .generated-link{display:none;margin-top:15px}
 .link-box{
     background:black;
@@ -164,10 +157,36 @@ input::placeholder{color:#eee}
         opacity:0;
     }
 }
+
+/* PHOTO POPUP */
+.photo-popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+.photo-popup img{
+    max-width:90%;
+    max-height:90%;
+    border-radius:20px;
+    animation:pop 0.6s ease;
+}
+@keyframes pop{
+    from{transform:scale(0.4);opacity:0}
+    to{transform:scale(1);opacity:1}
+}
 </style>
 </head>
 
 <body>
+
+<!-- PHOTO POPUP -->
+<div class="photo-popup" id="photoPopup">
+    <img src="bg.jpg" alt="Our moment">
+</div>
 
 <div class="container">
 
@@ -177,10 +196,10 @@ input::placeholder{color:#eee}
     <p class="subtitle">Create a surprise they’ll never forget</p>
 
     <label>Your Name</label>
-    <input id="fromName" placeholder="Your name">
+    <input id="fromName">
 
     <label>Valentine Name</label>
-    <input id="toName" placeholder="Their name">
+    <input id="toName">
 
     <button class="btn" id="generateBtn">Generate Link</button>
 
@@ -238,9 +257,7 @@ function generateLink(){
     generatedLink.style.display="block"
 }
 
-copyBtn.onclick=()=>{
-    navigator.clipboard.writeText(linkDisplay.textContent)
-}
+copyBtn.onclick=()=>navigator.clipboard.writeText(linkDisplay.textContent)
 
 function initNo(){
     const container=document.querySelector(".button-container")
@@ -257,19 +274,14 @@ function initNo(){
         setTimeout(()=>tryAgain.style.opacity=0,800)
 
         grow++
-        const scale=Math.min(1+grow*0.08,1.6)
-        const glow=Math.min(20+grow*10,60)
-        yesBtn.style.transform=`scale(${scale})`
-        yesBtn.style.boxShadow=`0 0 ${glow}px #ffd1ff`
+        yesBtn.style.transform=`scale(${Math.min(1+grow*0.08,1.6)})`
+        yesBtn.style.boxShadow=`0 0 ${Math.min(20+grow*10,60)}px #ffd1ff`
 
         if(navigator.vibrate) navigator.vibrate(100)
     }
 
     noBtn.onmouseenter=moveNo
-    noBtn.onclick=(e)=>{
-        e.preventDefault()
-        moveNo()
-    }
+    noBtn.onclick=(e)=>{e.preventDefault();moveNo()}
 }
 
 yesBtn.onclick=()=>{
@@ -277,6 +289,11 @@ yesBtn.onclick=()=>{
     loveMusic.play()
     explode()
     successMessage.style.display="block"
+
+    // PHOTO POPUP
+    const popup=document.getElementById("photoPopup")
+    popup.style.display="flex"
+    popup.onclick=()=>popup.style.display="none"
 }
 
 function explode(){
