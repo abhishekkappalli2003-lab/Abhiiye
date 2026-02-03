@@ -18,7 +18,7 @@ body{
     overflow:hidden;
 }
 
-/* Container – Insta Story Ratio */
+/* Container */
 .container{
     background:rgba(255,255,255,0.08);
     backdrop-filter:blur(25px);
@@ -31,6 +31,7 @@ body{
     color:white;
     text-align:center;
     position:relative;
+    overflow:hidden; /* IMPORTANT */
 }
 
 /* Titles */
@@ -44,7 +45,7 @@ h1{
 
 /* Inputs */
 label{display:block;text-align:left;font-size:13px;color:#ffd6ff;margin-bottom:6px}
-input,select{
+input{
     width:100%;
     padding:12px;
     border-radius:14px;
@@ -104,6 +105,7 @@ input::placeholder{color:#ddd}
     justify-content:center;
     margin-top:18px;
     position:relative;
+    height:90px; /* FIXED AREA */
 }
 
 .yes-btn{
@@ -121,20 +123,17 @@ input::placeholder{color:#ddd}
     border-radius:28px;
     background:#444;
     color:white;
-    opacity:1 !important;
-    visibility:visible !important;
-    display:inline-block !important;
-    transition:left .25s ease, top .25s ease;
-}
-
-.no-btn.moving{
     position:absolute;
+    right:0;
+    transition:left .25s ease, top .25s ease;
 }
 
 /* Try again text */
 #tryAgainText{
     position:absolute;
-    bottom:-20px;
+    bottom:-18px;
+    left:50%;
+    transform:translateX(-50%);
     font-size:12px;
     color:#ffd6ff;
     opacity:0;
@@ -197,12 +196,6 @@ input::placeholder{color:#ddd}
 
     <h2 class="valentine-title" id="typingText"></h2>
 
-    <select id="songSelect">
-        <option value="https://cdn.pixabay.com/audio/2023/02/28/audio_06b8a3d5ad.mp3">💜 Romantic Piano</option>
-        <option value="https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8c9b08c.mp3">💖 Soft Guitar</option>
-        <option value="https://cdn.pixabay.com/audio/2022/10/26/audio_3c1f2b8b8e.mp3">💘 Dreamy Love</option>
-    </select>
-
     <div class="button-container">
         <button class="yes-btn" id="yesBtn">YES 💘</button>
         <button class="no-btn" id="noBtn">No 🙈</button>
@@ -215,7 +208,10 @@ input::placeholder{color:#ddd}
     </div>
 </div>
 
-<audio id="loveMusic"></audio>
+<!-- Fixed romantic music -->
+<audio id="loveMusic">
+    <source src="https://cdn.pixabay.com/audio/2023/02/28/audio_06b8a3d5ad.mp3" type="audio/mpeg">
+</audio>
 
 </div>
 
@@ -245,20 +241,21 @@ copyBtn.onclick=()=>{
     setTimeout(()=>copyBtn.textContent="Copy Link",1200)
 }
 
-// NO BUTTON LOGIC
+// NO BUTTON LOGIC (STRICT BOUNDS)
 function initNo(){
-    const container=document.querySelector(".container")
+    const container=document.querySelector(".button-container")
     const tryAgain=document.getElementById("tryAgainText")
     let growCount=0
 
     function moveNo(){
-        noBtn.classList.add("moving")
-
         const c=container.getBoundingClientRect()
         const b=noBtn.getBoundingClientRect()
 
-        noBtn.style.left=Math.random()*(c.width-b.width-20)+"px"
-        noBtn.style.top=Math.random()*(c.height-b.height-20)+"px"
+        const maxX=c.width-b.width
+        const maxY=c.height-b.height
+
+        noBtn.style.left=Math.random()*maxX+"px"
+        noBtn.style.top=Math.random()*maxY+"px"
 
         tryAgain.style.opacity="1"
         setTimeout(()=>tryAgain.style.opacity="0",900)
@@ -269,19 +266,19 @@ function initNo(){
 
         yesBtn.style.transform=`scale(${scale})`
         yesBtn.style.boxShadow=`0 0 ${glow}px #ffd1ff`
+
+        if(navigator.vibrate) navigator.vibrate(120)
     }
 
     noBtn.onmouseenter=moveNo
     noBtn.onclick=(e)=>{
         e.preventDefault()
         moveNo()
-        if(navigator.vibrate) navigator.vibrate(120)
     }
 }
 
 // YES BUTTON
 yesBtn.onclick=()=>{
-    loveMusic.src=songSelect.value
     loveMusic.play()
     explodeHearts()
     successMessage.style.display="block"
