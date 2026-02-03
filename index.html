@@ -36,7 +36,7 @@ body{
     overflow:hidden;
 }
 
-/* TEXT */
+/* HEADINGS */
 h1{
     font-size:22px;
     background:linear-gradient(45deg,#ff6ec7,#ffd1ff);
@@ -58,7 +58,7 @@ input{
 }
 input::placeholder{color:#eee}
 
-/* BUTTON */
+/* BUTTONS */
 .btn{
     width:100%;
     padding:14px;
@@ -81,23 +81,24 @@ input::placeholder{color:#eee}
     word-break:break-all;
 }
 
-/* Surprise text */
+/* SURPRISE TEXT */
 .surprise-text{
     font-size:14px;
     color:#ffd6ff;
     font-weight:600;
     margin-bottom:10px;
-    display:inline-block;
+    display:block;
+    min-height:18px;
 }
 
-/* Bounce */
+/* BOUNCE */
 @keyframes bounce{
     0%,100%{transform:translateY(0)}
     30%{transform:translateY(-6px)}
     60%{transform:translateY(3px)}
 }
 
-/* Sparkle */
+/* SPARKLES */
 .sparkle{
     position:absolute;
     font-size:14px;
@@ -111,7 +112,7 @@ input::placeholder{color:#eee}
     }
 }
 
-/* Valentine */
+/* VALENTINE */
 .valentine-section{display:none}
 .neon-heart{
     width:110px;
@@ -125,7 +126,7 @@ input::placeholder{color:#eee}
 
 .valentine-title{font-size:22px;min-height:60px}
 
-/* Buttons */
+/* BUTTON AREA */
 .button-container{position:relative;height:100px;margin-top:20px}
 .yes-btn{
     padding:14px 38px;
@@ -133,7 +134,7 @@ input::placeholder{color:#eee}
     border-radius:28px;
     background:linear-gradient(45deg,#ff6ec7,#ffd1ff);
     font-weight:800;
-    transition:.25s;
+    transition:transform .25s ease, box-shadow .25s ease;
 }
 .no-btn{
     position:absolute;
@@ -144,7 +145,7 @@ input::placeholder{color:#eee}
     border-radius:28px;
     background:#444;
     color:white;
-    transition:left .2s;
+    transition:left .2s ease;
 }
 
 #tryAgainText{
@@ -152,14 +153,14 @@ input::placeholder{color:#eee}
     color:#ffd6ff;
     opacity:0;
     margin-top:6px;
-    transition:opacity .3s;
+    transition:opacity .3s ease;
 }
 
-/* Success */
+/* SUCCESS */
 .success-message{display:none}
 .success-text{font-size:28px;color:#ffd1ff;margin-top:20px}
 
-/* Confetti */
+/* CONFETTI */
 .confetti{
     position:fixed;
     top:50%;
@@ -176,7 +177,7 @@ input::placeholder{color:#eee}
     }
 }
 
-/* Photo popup */
+/* PHOTO POPUP */
 .photo-popup{
     position:fixed;
     inset:0;
@@ -230,8 +231,10 @@ input::placeholder{color:#eee}
 
 <!-- VALENTINE -->
 <div class="valentine-section" id="valentineSection">
+
     <svg class="neon-heart" viewBox="0 0 24 24">
-        <path fill="#ff6ec7" d="M12 21s-6.7-4.4-9.3-8C.6 9.3 2.4 5 6.5 5c2 0 3.4 1.2 4.5 2.6C12.1 6.2 13.5 5 15.5 5 19.6 5 21.4 9.3 21.3 13c-2.6 3.6-9.3 8-9.3 8z"/>
+        <path fill="#ff6ec7"
+        d="M12 21s-6.7-4.4-9.3-8C.6 9.3 2.4 5 6.5 5c2 0 3.4 1.2 4.5 2.6C12.1 6.2 13.5 5 15.5 5 19.6 5 21.4 9.3 21.3 13c-2.6 3.6-9.3 8-9.3 8z"/>
     </svg>
 
     <h2 class="valentine-title" id="typingText"></h2>
@@ -258,7 +261,7 @@ input::placeholder{color:#eee}
 <script>
 const params=new URLSearchParams(location.search)
 
-/* Page switch */
+/* PAGE SWITCH */
 if(params.get("from")&&params.get("to")){
     generatorSection.style.display="none"
     valentineSection.style.display="block"
@@ -269,7 +272,7 @@ if(params.get("from")&&params.get("to")){
     generateBtn.onclick=generateLink
 }
 
-/* Generate link */
+/* GENERATE LINK */
 function generateLink(){
     const link=`${location.origin}${location.pathname}?from=${fromName.value}&to=${toName.value}`
     linkDisplay.textContent=link
@@ -279,13 +282,15 @@ function generateLink(){
 
 copyBtn.onclick=()=>navigator.clipboard.writeText(linkDisplay.textContent)
 
-/* Surprise typing */
+/* SURPRISE TEXT */
 function showSurpriseText(){
     const text="Enthada surprise aayo neeeee 😏💖"
     let i=0
     surpriseText.textContent=""
+    surpriseText.style.animation="none"
+
     const t=setInterval(()=>{
-        surpriseText.textContent+=text[i++]
+        surpriseText.textContent+=text.charAt(i++)
         if(i===text.length){
             clearInterval(t)
             surpriseText.style.animation="bounce .6s"
@@ -309,7 +314,7 @@ function sparkleHearts(el){
     }
 }
 
-/* No button */
+/* NO BUTTON */
 function initNo(){
     const container=document.querySelector(".button-container")
     let grow=0,side=true
@@ -329,7 +334,7 @@ function initNo(){
     noBtn.onclick=e=>{e.preventDefault();moveNo()}
 }
 
-/* Yes click */
+/* YES CLICK */
 yesBtn.onclick=()=>{
     noBtn.style.display="none"
     loveMusic.play()
@@ -339,7 +344,7 @@ yesBtn.onclick=()=>{
     photoPopup.onclick=()=>photoPopup.style.display="none"
 }
 
-/* Confetti */
+/* CONFETTI */
 function explode(){
     for(let i=0;i<25;i++){
         const c=document.createElement("div")
@@ -351,12 +356,12 @@ function explode(){
     }
 }
 
-/* Valentine typing */
+/* VALENTINE TYPING */
 function typeText(text){
     let i=0
     typingText.textContent=""
     const t=setInterval(()=>{
-        typingText.textContent+=text[i++]
+        typingText.textContent+=text.charAt(i++)
         if(i===text.length)clearInterval(t)
     },60)
 }
