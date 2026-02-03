@@ -8,7 +8,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
-/* ===== BACKGROUND WITH YOUR PHOTO (GENERATOR + VALENTINE) ===== */
+/* BACKGROUND WITH YOUR PHOTO */
 body{
     font-family:'Poppins',sans-serif;
     min-height:100vh;
@@ -23,13 +23,13 @@ body{
         url("bg.jpg") center/cover no-repeat;
 }
 
-/* ===== CARD ===== */
+/* CARD */
 .container{
     background:linear-gradient(
-        rgba(255,255,255,0.10),
-        rgba(255,255,255,0.05)
+        rgba(255,255,255,0.12),
+        rgba(255,255,255,0.06)
     );
-    backdrop-filter:blur(16px);
+    backdrop-filter: blur(6px); /* SLIGHT BLUR */
     border-radius:28px;
     padding:28px;
     max-width:360px;
@@ -42,7 +42,7 @@ body{
     overflow:hidden;
 }
 
-/* ===== TEXT ===== */
+/* TEXT */
 h1{
     font-size:22px;
     background:linear-gradient(45deg,#ff6ec7,#ffd1ff);
@@ -51,7 +51,7 @@ h1{
 }
 .subtitle{font-size:14px;color:#ffd6ff;margin:10px 0 20px}
 
-/* ===== INPUTS ===== */
+/* INPUTS */
 label{display:block;text-align:left;font-size:13px;color:#ffd6ff;margin-bottom:6px}
 input{
     width:100%;
@@ -64,7 +64,7 @@ input{
 }
 input::placeholder{color:#eee}
 
-/* ===== BUTTONS ===== */
+/* BUTTONS */
 .btn{
     width:100%;
     padding:14px;
@@ -87,7 +87,7 @@ input::placeholder{color:#eee}
     word-break:break-all;
 }
 
-/* ===== VALENTINE ===== */
+/* VALENTINE */
 .valentine-section{display:none}
 
 .neon-heart{
@@ -105,7 +105,7 @@ input::placeholder{color:#eee}
     min-height:60px;
 }
 
-/* ===== BUTTON AREA ===== */
+/* BUTTON AREA */
 .button-container{
     position:relative;
     height:100px;
@@ -135,7 +135,7 @@ input::placeholder{color:#eee}
     transition:left .2s ease;
 }
 
-/* Try again */
+/* TRY AGAIN */
 #tryAgainText{
     font-size:12px;
     color:#ffd6ff;
@@ -171,7 +171,7 @@ input::placeholder{color:#eee}
 
 <div class="container">
 
-<!-- ===== GENERATOR ===== -->
+<!-- GENERATOR -->
 <div id="generatorSection">
     <h1>Valentine Link 💜</h1>
     <p class="subtitle">Create a surprise they’ll never forget</p>
@@ -190,7 +190,7 @@ input::placeholder{color:#eee}
     </div>
 </div>
 
-<!-- ===== VALENTINE ===== -->
+<!-- VALENTINE -->
 <div class="valentine-section" id="valentineSection">
 
     <svg class="neon-heart" viewBox="0 0 24 24">
