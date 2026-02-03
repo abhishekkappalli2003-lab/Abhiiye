@@ -8,31 +8,41 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
+/* ===== BACKGROUND WITH YOUR PHOTO (GENERATOR + VALENTINE) ===== */
 body{
     font-family:'Poppins',sans-serif;
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:radial-gradient(circle at top,#2b1055,#120021 70%);
+    background:
+        linear-gradient(
+            rgba(18,0,33,0.55),
+            rgba(18,0,33,0.55)
+        ),
+        url("bg.jpg") center/cover no-repeat;
 }
 
+/* ===== CARD ===== */
 .container{
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(25px);
+    background:linear-gradient(
+        rgba(255,255,255,0.10),
+        rgba(255,255,255,0.05)
+    );
+    backdrop-filter:blur(16px);
     border-radius:28px;
     padding:28px;
     max-width:360px;
     width:100%;
     aspect-ratio:9/16;
-    box-shadow:0 0 50px rgba(255,110,199,.35);
+    box-shadow:0 0 60px rgba(255,110,199,.45);
     color:white;
     text-align:center;
     position:relative;
     overflow:hidden;
 }
 
-/* Titles */
+/* ===== TEXT ===== */
 h1{
     font-size:22px;
     background:linear-gradient(45deg,#ff6ec7,#ffd1ff);
@@ -41,19 +51,20 @@ h1{
 }
 .subtitle{font-size:14px;color:#ffd6ff;margin:10px 0 20px}
 
-/* Inputs */
+/* ===== INPUTS ===== */
 label{display:block;text-align:left;font-size:13px;color:#ffd6ff;margin-bottom:6px}
 input{
     width:100%;
     padding:12px;
     border-radius:14px;
     border:none;
-    background:rgba(255,255,255,.15);
+    background:rgba(255,255,255,.2);
     color:white;
     margin-bottom:14px;
 }
+input::placeholder{color:#eee}
 
-/* Buttons */
+/* ===== BUTTONS ===== */
 .btn{
     width:100%;
     padding:14px;
@@ -64,6 +75,7 @@ input{
     color:#120021;
     cursor:pointer;
 }
+.btn:active{transform:scale(.97)}
 
 .generated-link{display:none;margin-top:15px}
 .link-box{
@@ -72,9 +84,10 @@ input{
     padding:10px;
     border-radius:12px;
     font-size:12px;
+    word-break:break-all;
 }
 
-/* Valentine */
+/* ===== VALENTINE ===== */
 .valentine-section{display:none}
 
 .neon-heart{
@@ -92,7 +105,7 @@ input{
     min-height:60px;
 }
 
-/* Buttons Area */
+/* ===== BUTTON AREA ===== */
 .button-container{
     position:relative;
     height:100px;
@@ -112,7 +125,7 @@ input{
 /* NO */
 .no-btn{
     position:absolute;
-    top:60px; /* BELOW YES */
+    top:60px;
     left:0;
     padding:14px 30px;
     border:none;
@@ -122,7 +135,7 @@ input{
     transition:left .2s ease;
 }
 
-/* Try again text */
+/* Try again */
 #tryAgainText{
     font-size:12px;
     color:#ffd6ff;
@@ -131,11 +144,11 @@ input{
     transition:opacity .3s ease;
 }
 
-/* Success */
+/* SUCCESS */
 .success-message{display:none}
 .success-text{font-size:28px;color:#ffd1ff;margin-top:20px}
 
-/* Confetti */
+/* CONFETTI */
 .confetti{
     position:fixed;
     top:50%;
@@ -158,16 +171,16 @@ input{
 
 <div class="container">
 
-<!-- GENERATOR -->
+<!-- ===== GENERATOR ===== -->
 <div id="generatorSection">
     <h1>Valentine Link 💜</h1>
     <p class="subtitle">Create a surprise they’ll never forget</p>
 
     <label>Your Name</label>
-    <input id="fromName">
+    <input id="fromName" placeholder="Your name">
 
     <label>Valentine Name</label>
-    <input id="toName">
+    <input id="toName" placeholder="Their name">
 
     <button class="btn" id="generateBtn">Generate Link</button>
 
@@ -177,11 +190,12 @@ input{
     </div>
 </div>
 
-<!-- VALENTINE -->
+<!-- ===== VALENTINE ===== -->
 <div class="valentine-section" id="valentineSection">
 
     <svg class="neon-heart" viewBox="0 0 24 24">
-        <path fill="#ff6ec7" d="M12 21s-6.7-4.4-9.3-8C.6 9.3 2.4 5 6.5 5c2 0 3.4 1.2 4.5 2.6C12.1 6.2 13.5 5 15.5 5 19.6 5 21.4 9.3 21.3 13c-2.6 3.6-9.3 8-9.3 8z"/>
+        <path fill="#ff6ec7"
+        d="M12 21s-6.7-4.4-9.3-8C.6 9.3 2.4 5 6.5 5c2 0 3.4 1.2 4.5 2.6C12.1 6.2 13.5 5 15.5 5 19.6 5 21.4 9.3 21.3 13c-2.6 3.6-9.3 8-9.3 8z"/>
     </svg>
 
     <h2 class="valentine-title" id="typingText"></h2>
@@ -259,7 +273,7 @@ function initNo(){
 }
 
 yesBtn.onclick=()=>{
-    noBtn.style.display="none"   // NO DISAPPEARS
+    noBtn.style.display="none"
     loveMusic.play()
     explode()
     successMessage.style.display="block"
