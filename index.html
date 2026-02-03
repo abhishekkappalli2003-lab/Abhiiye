@@ -30,6 +30,7 @@ body{
     box-shadow:0 0 50px rgba(255,110,199,.35);
     color:white;
     text-align:center;
+    position:relative;
 }
 
 /* Titles */
@@ -102,22 +103,43 @@ input::placeholder{color:#ddd}
     gap:16px;
     justify-content:center;
     margin-top:18px;
+    position:relative;
 }
+
 .yes-btn{
     padding:14px 38px;
     border:none;
     border-radius:28px;
     background:linear-gradient(45deg,#ff6ec7,#ffd1ff);
     font-weight:800;
+    transition:transform .25s ease, box-shadow .25s ease;
 }
+
 .no-btn{
     padding:14px 30px;
     border:none;
     border-radius:28px;
     background:#444;
     color:white;
+    opacity:1 !important;
+    visibility:visible !important;
+    display:inline-block !important;
+    transition:left .25s ease, top .25s ease;
 }
-.no-btn.moving{position:fixed}
+
+.no-btn.moving{
+    position:absolute;
+}
+
+/* Try again text */
+#tryAgainText{
+    position:absolute;
+    bottom:-20px;
+    font-size:12px;
+    color:#ffd6ff;
+    opacity:0;
+    transition:opacity .3s ease;
+}
 
 /* Success */
 .success-message{display:none}
@@ -175,7 +197,6 @@ input::placeholder{color:#ddd}
 
     <h2 class="valentine-title" id="typingText"></h2>
 
-    <!-- Song Selector -->
     <select id="songSelect">
         <option value="https://cdn.pixabay.com/audio/2023/02/28/audio_06b8a3d5ad.mp3">💜 Romantic Piano</option>
         <option value="https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8c9b08c.mp3">💖 Soft Guitar</option>
@@ -185,6 +206,7 @@ input::placeholder{color:#ddd}
     <div class="button-container">
         <button class="yes-btn" id="yesBtn">YES 💘</button>
         <button class="no-btn" id="noBtn">No 🙈</button>
+        <div id="tryAgainText">😅 try again</div>
     </div>
 
     <div class="success-message" id="successMessage">
@@ -223,12 +245,37 @@ copyBtn.onclick=()=>{
     setTimeout(()=>copyBtn.textContent="Copy Link",1200)
 }
 
-// NO BUTTON
+// NO BUTTON LOGIC
 function initNo(){
-    noBtn.onmouseenter=()=>{
+    const container=document.querySelector(".container")
+    const tryAgain=document.getElementById("tryAgainText")
+    let growCount=0
+
+    function moveNo(){
         noBtn.classList.add("moving")
-        noBtn.style.left=Math.random()*(innerWidth-100)+"px"
-        noBtn.style.top=Math.random()*(innerHeight-60)+"px"
+
+        const c=container.getBoundingClientRect()
+        const b=noBtn.getBoundingClientRect()
+
+        noBtn.style.left=Math.random()*(c.width-b.width-20)+"px"
+        noBtn.style.top=Math.random()*(c.height-b.height-20)+"px"
+
+        tryAgain.style.opacity="1"
+        setTimeout(()=>tryAgain.style.opacity="0",900)
+
+        growCount++
+        const scale=Math.min(1+growCount*0.08,1.6)
+        const glow=Math.min(20+growCount*10,60)
+
+        yesBtn.style.transform=`scale(${scale})`
+        yesBtn.style.boxShadow=`0 0 ${glow}px #ffd1ff`
+    }
+
+    noBtn.onmouseenter=moveNo
+    noBtn.onclick=(e)=>{
+        e.preventDefault()
+        moveNo()
+        if(navigator.vibrate) navigator.vibrate(120)
     }
 }
 
