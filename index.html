@@ -8,7 +8,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
-/* BACKGROUND WITH PHOTO */
+/* BACKGROUND */
 body{
     font-family:'Poppins',sans-serif;
     min-height:100vh;
@@ -56,8 +56,9 @@ input{
     color:white;
     margin-bottom:14px;
 }
+input::placeholder{color:#eee}
 
-/* BUTTONS */
+/* BUTTON */
 .btn{
     width:100%;
     padding:14px;
@@ -68,8 +69,8 @@ input{
     color:#120021;
     cursor:pointer;
 }
+.btn:active{transform:scale(.97)}
 
-/* GENERATOR */
 .generated-link{display:none;margin-top:15px}
 .link-box{
     background:black;
@@ -80,9 +81,38 @@ input{
     word-break:break-all;
 }
 
-/* VALENTINE */
-.valentine-section{display:none}
+/* Surprise text */
+.surprise-text{
+    font-size:14px;
+    color:#ffd6ff;
+    font-weight:600;
+    margin-bottom:10px;
+    display:inline-block;
+}
 
+/* Bounce */
+@keyframes bounce{
+    0%,100%{transform:translateY(0)}
+    30%{transform:translateY(-6px)}
+    60%{transform:translateY(3px)}
+}
+
+/* Sparkle */
+.sparkle{
+    position:absolute;
+    font-size:14px;
+    animation:sparkle 1s ease-out forwards;
+    pointer-events:none;
+}
+@keyframes sparkle{
+    to{
+        opacity:0;
+        transform:translate(var(--x),var(--y)) scale(0);
+    }
+}
+
+/* Valentine */
+.valentine-section{display:none}
 .neon-heart{
     width:110px;
     margin:20px auto;
@@ -93,29 +123,18 @@ input{
     50%{transform:scale(1.15)}
 }
 
-.valentine-title{
-    font-size:22px;
-    min-height:60px;
-}
+.valentine-title{font-size:22px;min-height:60px}
 
-/* BUTTON AREA */
-.button-container{
-    position:relative;
-    height:100px;
-    margin-top:20px;
-}
-
-/* YES */
+/* Buttons */
+.button-container{position:relative;height:100px;margin-top:20px}
 .yes-btn{
     padding:14px 38px;
     border:none;
     border-radius:28px;
     background:linear-gradient(45deg,#ff6ec7,#ffd1ff);
     font-weight:800;
-    transition:transform .25s ease, box-shadow .25s ease;
+    transition:.25s;
 }
-
-/* NO */
 .no-btn{
     position:absolute;
     top:60px;
@@ -125,23 +144,22 @@ input{
     border-radius:28px;
     background:#444;
     color:white;
-    transition:left .2s ease;
+    transition:left .2s;
 }
 
-/* TRY AGAIN */
 #tryAgainText{
     font-size:12px;
     color:#ffd6ff;
     opacity:0;
     margin-top:6px;
-    transition:opacity .3s ease;
+    transition:opacity .3s;
 }
 
-/* SUCCESS */
+/* Success */
 .success-message{display:none}
 .success-text{font-size:28px;color:#ffd1ff;margin-top:20px}
 
-/* CONFETTI */
+/* Confetti */
 .confetti{
     position:fixed;
     top:50%;
@@ -158,7 +176,7 @@ input{
     }
 }
 
-/* PHOTO POPUP */
+/* Photo popup */
 .photo-popup{
     position:fixed;
     inset:0;
@@ -172,10 +190,10 @@ input{
     max-width:90%;
     max-height:90%;
     border-radius:20px;
-    animation:pop 0.6s ease;
+    animation:pop .6s ease;
 }
 @keyframes pop{
-    from{transform:scale(0.4);opacity:0}
+    from{transform:scale(.4);opacity:0}
     to{transform:scale(1);opacity:1}
 }
 </style>
@@ -185,7 +203,7 @@ input{
 
 <!-- PHOTO POPUP -->
 <div class="photo-popup" id="photoPopup">
-    <img src="bg.jpg" alt="Our moment">
+    <img src="bg.jpg">
 </div>
 
 <div class="container">
@@ -204,6 +222,7 @@ input{
     <button class="btn" id="generateBtn">Generate Link</button>
 
     <div class="generated-link" id="generatedLink">
+        <p id="surpriseText" class="surprise-text"></p>
         <div class="link-box" id="linkDisplay"></div>
         <button class="btn" id="copyBtn">Copy Link</button>
     </div>
@@ -211,10 +230,8 @@ input{
 
 <!-- VALENTINE -->
 <div class="valentine-section" id="valentineSection">
-
     <svg class="neon-heart" viewBox="0 0 24 24">
-        <path fill="#ff6ec7"
-        d="M12 21s-6.7-4.4-9.3-8C.6 9.3 2.4 5 6.5 5c2 0 3.4 1.2 4.5 2.6C12.1 6.2 13.5 5 15.5 5 19.6 5 21.4 9.3 21.3 13c-2.6 3.6-9.3 8-9.3 8z"/>
+        <path fill="#ff6ec7" d="M12 21s-6.7-4.4-9.3-8C.6 9.3 2.4 5 6.5 5c2 0 3.4 1.2 4.5 2.6C12.1 6.2 13.5 5 15.5 5 19.6 5 21.4 9.3 21.3 13c-2.6 3.6-9.3 8-9.3 8z"/>
     </svg>
 
     <h2 class="valentine-title" id="typingText"></h2>
@@ -241,6 +258,7 @@ input{
 <script>
 const params=new URLSearchParams(location.search)
 
+/* Page switch */
 if(params.get("from")&&params.get("to")){
     generatorSection.style.display="none"
     valentineSection.style.display="block"
@@ -251,51 +269,77 @@ if(params.get("from")&&params.get("to")){
     generateBtn.onclick=generateLink
 }
 
+/* Generate link */
 function generateLink(){
     const link=`${location.origin}${location.pathname}?from=${fromName.value}&to=${toName.value}`
     linkDisplay.textContent=link
     generatedLink.style.display="block"
+    showSurpriseText()
 }
 
 copyBtn.onclick=()=>navigator.clipboard.writeText(linkDisplay.textContent)
 
-function initNo(){
-    const container=document.querySelector(".button-container")
-    const tryAgain=document.getElementById("tryAgainText")
-    let grow=0
-    let side=true
-
-    function moveNo(){
-        const maxX=container.clientWidth-noBtn.offsetWidth
-        noBtn.style.left=side?maxX+"px":"0px"
-        side=!side
-
-        tryAgain.style.opacity=1
-        setTimeout(()=>tryAgain.style.opacity=0,800)
-
-        grow++
-        yesBtn.style.transform=`scale(${Math.min(1+grow*0.08,1.6)})`
-        yesBtn.style.boxShadow=`0 0 ${Math.min(20+grow*10,60)}px #ffd1ff`
-
-        if(navigator.vibrate) navigator.vibrate(100)
-    }
-
-    noBtn.onmouseenter=moveNo
-    noBtn.onclick=(e)=>{e.preventDefault();moveNo()}
+/* Surprise typing */
+function showSurpriseText(){
+    const text="Enthada surprise aayo neeeee 😏💖"
+    let i=0
+    surpriseText.textContent=""
+    const t=setInterval(()=>{
+        surpriseText.textContent+=text[i++]
+        if(i===text.length){
+            clearInterval(t)
+            surpriseText.style.animation="bounce .6s"
+            sparkleHearts(surpriseText)
+        }
+    },60)
 }
 
+function sparkleHearts(el){
+    const r=el.getBoundingClientRect()
+    for(let i=0;i<6;i++){
+        const s=document.createElement("span")
+        s.className="sparkle"
+        s.textContent="💖"
+        s.style.left=r.left+r.width/2+"px"
+        s.style.top=r.top+"px"
+        s.style.setProperty("--x",(Math.random()*60-30)+"px")
+        s.style.setProperty("--y",(Math.random()*-40-20)+"px")
+        document.body.appendChild(s)
+        setTimeout(()=>s.remove(),1000)
+    }
+}
+
+/* No button */
+function initNo(){
+    const container=document.querySelector(".button-container")
+    let grow=0,side=true
+
+    function moveNo(){
+        noBtn.style.left=side?(container.clientWidth-noBtn.offsetWidth)+"px":"0px"
+        side=!side
+        tryAgainText.style.opacity=1
+        setTimeout(()=>tryAgainText.style.opacity=0,800)
+
+        grow++
+        yesBtn.style.transform=`scale(${Math.min(1+grow*.08,1.6)})`
+        yesBtn.style.boxShadow=`0 0 ${Math.min(20+grow*10,60)}px #ffd1ff`
+        if(navigator.vibrate) navigator.vibrate(100)
+    }
+    noBtn.onmouseenter=moveNo
+    noBtn.onclick=e=>{e.preventDefault();moveNo()}
+}
+
+/* Yes click */
 yesBtn.onclick=()=>{
     noBtn.style.display="none"
     loveMusic.play()
     explode()
     successMessage.style.display="block"
-
-    // PHOTO POPUP
-    const popup=document.getElementById("photoPopup")
-    popup.style.display="flex"
-    popup.onclick=()=>popup.style.display="none"
+    photoPopup.style.display="flex"
+    photoPopup.onclick=()=>photoPopup.style.display="none"
 }
 
+/* Confetti */
 function explode(){
     for(let i=0;i<25;i++){
         const c=document.createElement("div")
@@ -307,6 +351,7 @@ function explode(){
     }
 }
 
+/* Valentine typing */
 function typeText(text){
     let i=0
     typingText.textContent=""
